@@ -1,4 +1,4 @@
-# ✅ Lista de Tareas
+#  Lista de Tareas
 
 Una aplicación de tareas pendientes hecha con HTML, CSS y JavaScript puro.
 
