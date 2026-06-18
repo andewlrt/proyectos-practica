@@ -1,4 +1,4 @@
-# 🛍️ Catálogo de Productos - Base de Datos SQL
+#  Catálogo de Productos - Base de Datos SQL
 
 Base de datos para un catálogo de productos con ventas y clientes.
 
