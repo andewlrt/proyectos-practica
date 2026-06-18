@@ -1,4 +1,4 @@
-# 💱 Convertidor de Moneda
+#  Convertidor de Moneda
 
 Aplicación web para convertir entre diferentes monedas latinoamericanas y mundiales.
 
