@@ -1,4 +1,4 @@
-# 🎮 Juego: Adivina el Número
+#  Juego: Adivina el Número
 
 Juego de consola hecho en Python donde tienes que adivinar un número aleatorio.
 
