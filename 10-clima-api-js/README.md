@@ -1,4 +1,4 @@
-# 🌤️ App del Clima con API
+#  App del Clima con API
 
 Aplicación del clima que consume la API de OpenWeatherMap.
 
