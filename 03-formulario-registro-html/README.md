@@ -1,4 +1,4 @@
-# 📋 Formulario de Registro con Validación
+#  Formulario de Registro con Validación
 
 Formulario de registro con validación de campos usando JavaScript puro.
 
