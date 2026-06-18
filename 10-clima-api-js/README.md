@@ -9,15 +9,7 @@ Aplicación del clima que consume la API de OpenWeatherMap.
 - Botones de acceso rápido para ciudades populares
 - Funciona con datos de ejemplo si no tienes API key
 
-## Configuración
-1. Regístrate gratis en [openweathermap.org](https://openweathermap.org)
-2. Ve a "API Keys" en tu perfil
-3. Copia tu API key
-4. En el archivo `index.html`, busca esta línea:
-   ```javascript
-   const API_KEY = 'TU_API_KEY';
-   ```
-5. Reemplaza `TU_API_KEY` con tu clave real
+
 
 ## Tecnologías
 - HTML5
