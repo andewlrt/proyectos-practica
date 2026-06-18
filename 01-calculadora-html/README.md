@@ -1,4 +1,4 @@
-# 🧮 Calculadora Web
+#  Calculadora Web
 
 Una calculadora simple hecha con HTML, CSS y JavaScript.
 
