@@ -1,12 +1,12 @@
-# 🧠 Quiz de Tecnología
+#  Quiz de Tecnología
 
 Quiz interactivo sobre tecnología e informática hecho con HTML, CSS y JavaScript.
 
 ## Categorías disponibles
-- 💻 Conocimiento General
-- 👨‍💻 Programación
-- 🌐 Internet y Redes
-- 🖥️ Hardware
+-  Conocimiento General
+-  Programación
+-  Internet y Redes
+-  Hardware
 
 ## Funcionalidades
 - 4 categorías con 5 preguntas cada una
