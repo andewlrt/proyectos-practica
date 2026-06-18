@@ -1,10 +1,10 @@
-# 💻 Proyectos de Práctica - Portafolio Personal
+#  Proyectos de Práctica - Portafolio Personal
 
 Colección de 10 proyectos pequeños para practicar diferentes tecnologías de desarrollo web y programación.
 
 ---
 
-## 📁 Proyectos
+#  Proyectos
 
 | # | Proyecto | Tecnologías | Descripción |
 |---|----------|-------------|-------------|
@@ -21,7 +21,7 @@ Colección de 10 proyectos pequeños para practicar diferentes tecnologías de d
 
 ---
 
-## 🛠️ Tecnologías usadas
+##  Tecnologías usadas
 
 - **HTML5** - Estructura de páginas web
 - **CSS3** - Estilos, flexbox, grid, gradientes
@@ -32,7 +32,7 @@ Colección de 10 proyectos pequeños para practicar diferentes tecnologías de d
 
 ---
 
-## 🚀 Cómo usar estos proyectos
+##  Cómo usar estos proyectos
 
 ### Proyectos web (HTML/JS):
 Simplemente abre el archivo `index.html` en tu navegador favorito.
@@ -41,7 +41,7 @@ Simplemente abre el archivo `index.html` en tu navegador favorito.
 ```bash
 python nombre_archivo.py
 ```
-> Requiere Python 3 instalado
+> Requiere  tener Python 3 para póder abrirlo
 
 ### Proyectos SQL:
 ```bash
@@ -54,7 +54,7 @@ mysql -u root -p < archivo.sql
 
 ---
 
-## 📚 Lo que aprendí
+##  Lo que aprendi
 
 - Crear interfaces de usuario con HTML y CSS
 - Manipular el DOM con JavaScript
@@ -66,4 +66,4 @@ mysql -u root -p < archivo.sql
 
 ---
 
-*Proyectos realizados como práctica personal de programación*
+*Proyectos realizados como ejercicios principales*
