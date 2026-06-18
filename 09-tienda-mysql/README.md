@@ -1,4 +1,4 @@
-# 🛒 Tienda Online - Base de Datos MySQL
+#  Tienda Online - Base de Datos MySQL
 
 Base de datos completa para una tienda online con usuarios, pedidos y reseñas.
 
