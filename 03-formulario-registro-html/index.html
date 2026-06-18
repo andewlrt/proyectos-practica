@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Registro</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .tarjeta {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .grupo {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px 13px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus {
+            border-color: #667eea;
+        }
+
+        input.error {
+            border-color: #fc8181;
+        }
+
+        input.valido {
+            border-color: #68d391;
+        }
+
+        .mensaje-error {
+            color: #e53e3e;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .mensaje-error.visible {
+            display: block;
+        }
+
+        .fila {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-registro {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .btn-registro:hover {
+            opacity: 0.9;
+        }
+
+        .exito {
+            background: #f0fff4;
+            border: 2px solid #68d391;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .exito h3 { color: #276749; }
+        .exito p { color: #48bb78; margin-top: 8px; }
+
+        .barra-password {
+            height: 5px;
+            border-radius: 3px;
+            margin-top: 6px;
+            background: #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .barra-password.debil { background: #fc8181; width: 33%; }
+        .barra-password.media { background: #f6ad55; width: 66%; }
+        .barra-password.fuerte { background: #68d391; width: 100%; }
+    </style>
+</head>
+<body>
+
+<div class="tarjeta">
+    <h2>Crear cuenta</h2>
+    <p class="subtitulo">Completa el formulario para registrarte</p>
+
+    <div id="formulario">
+        <div class="fila">
+            <div class="grupo">
+                <label>Nombre</label>
+                <input type="text" id="nombre" placeholder="Juan" />
+                <span class="mensaje-error" id="error-nombre">Ingresa tu nombre</span>
+            </div>
+            <div class="grupo">
+                <label>Apellido</label>
+                <input type="text" id="apellido" placeholder="Pérez" />
+                <span class="mensaje-error" id="error-apellido">Ingresa tu apellido</span>
+            </div>
+        </div>
+
+        <div class="grupo">
+            <label>Correo electrónico</label>
+            <input type="text" id="email" placeholder="juan@correo.com" />
+            <span class="mensaje-error" id="error-email">Ingresa un email válido</span>
+        </div>
+
+        <div class="grupo">
+            <label>Edad</label>
+            <input type="number" id="edad" placeholder="25" min="1" max="120" />
+            <span class="mensaje-error" id="error-edad">Ingresa una edad válida (1-120)</span>
+        </div>
+
+        <div class="grupo">
+            <label>País</label>
+            <select id="pais">
+                <option value="">-- Selecciona tu país --</option>
+                <option value="colombia">Colombia</option>
+                <option value="mexico">México</option>
+                <option value="argentina">Argentina</option>
+                <option value="españa">España</option>
+                <option value="chile">Chile</option>
+                <option value="peru">Perú</option>
+                <option value="otro">Otro</option>
+            </select>
+            <span class="mensaje-error" id="error-pais">Selecciona un país</span>
+        </div>
+
+        <div class="grupo">
+            <label>Contraseña</label>
+            <input type="password" id="password" placeholder="Mínimo 6 caracteres" oninput="verificarPassword()" />
+            <div class="barra-password" id="barra-password"></div>
+            <span class="mensaje-error" id="error-password">La contraseña debe tener al menos 6 caracteres</span>
+        </div>
+
+        <div class="grupo">
+            <label>Confirmar contraseña</label>
+            <input type="password" id="confirmar" placeholder="Repite tu contraseña" />
+            <span class="mensaje-error" id="error-confirmar">Las contraseñas no coinciden</span>
+        </div>
+
+        <button class="btn-registro" onclick="validarFormulario()">Registrarse</button>
+    </div>
+
+    <div class="exito" id="mensaje-exito">
+        <h3>¡Registro exitoso! 🎉</h3>
+        <p>Tu cuenta ha sido creada correctamente.</p>
+    </div>
+</div>
+
+<script>
+    function verificarPassword() {
+        let pass = document.getElementById('password').value;
+        let barra = document.getElementById('barra-password');
+
+        barra.className = 'barra-password';
+
+        if (pass.length === 0) return;
+        if (pass.length < 6) {
+            barra.classList.add('debil');
+        } else if (pass.length < 10) {
+            barra.classList.add('media');
+        } else {
+            barra.classList.add('fuerte');
+        }
+    }
+
+    function mostrarError(id, mostrar) {
+        let campo = document.getElementById(id.replace('error-', ''));
+        let error = document.getElementById(id);
+
+        if (mostrar) {
+            campo.classList.add('error');
+            campo.classList.remove('valido');
+            error.classList.add('visible');
+        } else {
+            campo.classList.remove('error');
+            campo.classList.add('valido');
+            error.classList.remove('visible');
+        }
+    }
+
+    function validarFormulario() {
+        let hayErrores = false;
+
+        // Validar nombre
+        let nombre = document.getElementById('nombre').value.trim();
+        if (nombre === '') {
+            mostrarError('error-nombre', true);
+            hayErrores = true;
+        } else {
+            mostrarError('error-nombre', false);
+        }
+
+        // Validar apellido
+        let apellido = document.getElementById('apellido').value.trim();
+        if (apellido === '') {
+            mostrarError('error-apellido', true);
+            hayErrores = true;
+        } else {
+            mostrarError('error-apellido', false);
+        }
+
+        // Validar email
+        let email = document.getElementById('email').value.trim();
+        let regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexEmail.test(email)) {
+            mostrarError('error-email', true);
+            hayErrores = true;
+        } else {
+            mostrarError('error-email', false);
+        }
+
+        // Validar edad
+        let edad = document.getElementById('edad').value;
+        if (edad === '' || edad < 1 || edad > 120) {
+            mostrarError('error-edad', true);
+            hayErrores = true;
+        } else {
+            mostrarError('error-edad', false);
+        }
+
+        // Validar país
+        let pais = document.getElementById('pais').value;
+        if (pais === '') {
+            mostrarError('error-pais', true);
+            hayErrores = true;
+        } else {
+            mostrarError('error-pais', false);
+        }
+
+        // Validar password
+        let password = document.getElementById('password').value;
+        if (password.length < 6) {
+            mostrarError('error-password', true);
+            hayErrores = true;
+        } else {
+            mostrarError('error-password', false);
+        }
+
+        // Validar confirmar password
+        let confirmar = document.getElementById('confirmar').value;
+        if (confirmar !== password) {
+            mostrarError('error-confirmar', true);
+            hayErrores = true;
+        } else {
+            mostrarError('error-confirmar', false);
+        }
+
+        if (!hayErrores) {
+            document.getElementById('formulario').style.display = 'none';
+            document.getElementById('mensaje-exito').style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

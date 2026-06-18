@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clima App</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #1e3a5f 0%, #2d6a9f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .buscador {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            padding: 13px 16px;
+            border: none;
+            border-radius: 30px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .btn-buscar {
+            padding: 13px 20px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .btn-buscar:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .tarjeta {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            display: none;
+        }
+
+        .ciudad {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .pais { opacity: 0.8; font-size: 15px; margin-bottom: 20px; }
+
+        .clima-principal {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .icono-clima { font-size: 64px; }
+
+        .temperatura { font-size: 56px; font-weight: 200; }
+        .descripcion { opacity: 0.9; font-size: 15px; text-transform: capitalize; }
+
+        .detalles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .detalle-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .detalle-label { font-size: 11px; opacity: 0.7; text-transform: uppercase; }
+        .detalle-valor { font-size: 18px; font-weight: 600; }
+
+        .ciudades-rapidas {
+            margin-top: 15px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ciudades-rapidas button {
+            padding: 7px 15px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .ciudades-rapidas button:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .error {
+            background: rgba(255,100,100,0.3);
+            border: 1px solid rgba(255,100,100,0.5);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            text-align: center;
+            display: none;
+        }
+
+        .cargando {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            display: none;
+        }
+
+        .nota-api {
+            background: rgba(255,255,200,0.15);
+            border: 1px solid rgba(255,255,200,0.3);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            font-size: 13px;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .nota-api a {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <h1>🌤️ App del Clima</h1>
+
+    <div class="buscador">
+        <input type="text" id="ciudad-input" placeholder="Buscar ciudad... ej: Bogotá" />
+        <button class="btn-buscar" onclick="buscarClima()">🔍</button>
+    </div>
+
+    <div class="ciudades-rapidas">
+        <button onclick="buscarRapido('Bogotá')">🇨🇴 Bogotá</button>
+        <button onclick="buscarRapido('Medellín')">🌺 Medellín</button>
+        <button onclick="buscarRapido('Madrid')">🇪🇸 Madrid</button>
+        <button onclick="buscarRapido('Buenos Aires')">🇦🇷 Buenos Aires</button>
+    </div>
+
+    <div class="cargando" id="cargando">
+        ⏳ Buscando clima...
+    </div>
+
+    <div class="error" id="error">
+        ❌ No se encontró la ciudad. Verifica el nombre.
+    </div>
+
+    <div class="tarjeta" id="tarjeta-clima">
+        <div class="ciudad" id="nombre-ciudad"></div>
+        <div class="pais" id="pais"></div>
+        <div class="clima-principal">
+            <div class="icono-clima" id="icono-clima"></div>
+            <div>
+                <div class="temperatura" id="temperatura"></div>
+                <div class="descripcion" id="descripcion"></div>
+            </div>
+        </div>
+        <div class="detalles">
+            <div class="detalle-item">
+                <span class="detalle-label">Sensación</span>
+                <span class="detalle-valor" id="sensacion"></span>
+            </div>
+            <div class="detalle-item">
+                <span class="detalle-label">Humedad</span>
+                <span class="detalle-valor" id="humedad"></span>
+            </div>
+            <div class="detalle-item">
+                <span class="detalle-label">Viento</span>
+                <span class="detalle-valor" id="viento"></span>
+            </div>
+            <div class="detalle-item">
+                <span class="detalle-label">Visibilidad</span>
+                <span class="detalle-valor" id="visibilidad"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="nota-api">
+        ⚙️ <strong>Para desarrolladores:</strong> Esta app usa la API de 
+        <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a>.
+        Para hacerla funcional necesitas:
+        <br>1. Crear cuenta en openweathermap.org (gratis)
+        <br>2. Obtener tu API key
+        <br>3. Reemplazar <code>TU_API_KEY</code> en el código JavaScript
+    </div>
+</div>
+
+<script>
+    // 🔑 Reemplaza con tu API key de openweathermap.org (es gratis)
+    const API_KEY = 'TU_API_KEY';
+    const API_URL = 'https://api.openweathermap.org/data/2.5/weather';
+
+    const iconosClima = {
+        '01': '☀️',
+        '02': '⛅',
+        '03': '☁️',
+        '04': '☁️',
+        '09': '🌧️',
+        '10': '🌦️',
+        '11': '⛈️',
+        '13': '❄️',
+        '50': '🌫️'
+    };
+
+    function obtenerIcono(codigo) {
+        let prefijo = codigo.substring(0, 2);
+        return iconosClima[prefijo] || '🌡️';
+    }
+
+    async function buscarClima() {
+        let ciudad = document.getElementById('ciudad-input').value.trim();
+
+        if (!ciudad) {
+            alert('Por favor escribe el nombre de una ciudad');
+            return;
+        }
+
+        if (API_KEY === 'TU_API_KEY') {
+            // Mostrar datos de ejemplo si no hay API key
+            mostrarDatosEjemplo(ciudad);
+            return;
+        }
+
+        // Ocultar tarjeta y error
+        document.getElementById('tarjeta-clima').style.display = 'none';
+        document.getElementById('error').style.display = 'none';
+        document.getElementById('cargando').style.display = 'block';
+
+        try {
+            let url = `${API_URL}?q=${ciudad}&appid=${API_KEY}&units=metric&lang=es`;
+            let respuesta = await fetch(url);
+
+            if (!respuesta.ok) {
+                throw new Error('Ciudad no encontrada');
+            }
+
+            let datos = await respuesta.json();
+            mostrarClima(datos);
+
+        } catch (error) {
+            document.getElementById('cargando').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        }
+    }
+
+    function mostrarClima(datos) {
+        document.getElementById('cargando').style.display = 'none';
+        document.getElementById('error').style.display = 'none';
+
+        document.getElementById('nombre-ciudad').textContent = datos.name;
+        document.getElementById('pais').textContent = `${datos.sys.country} · Actualizado ahora`;
+        document.getElementById('temperatura').textContent = Math.round(datos.main.temp) + '°C';
+        document.getElementById('descripcion').textContent = datos.weather[0].description;
+        document.getElementById('icono-clima').textContent = obtenerIcono(datos.weather[0].icon);
+        document.getElementById('sensacion').textContent = Math.round(datos.main.feels_like) + '°C';
+        document.getElementById('humedad').textContent = datos.main.humidity + '%';
+        document.getElementById('viento').textContent = Math.round(datos.wind.speed * 3.6) + ' km/h';
+        document.getElementById('visibilidad').textContent = (datos.visibility / 1000).toFixed(1) + ' km';
+
+        document.getElementById('tarjeta-clima').style.display = 'block';
+    }
+
+    function mostrarDatosEjemplo(ciudad) {
+        // Datos de ejemplo para mostrar cuando no hay API key
+        let ejemplos = {
+            default: { temp: 18, sensacion: 16, humedad: 72, viento: 15, visib: 10, desc: 'parcialmente nublado', icono: '⛅' }
+        };
+
+        let d = ejemplos.default;
+        document.getElementById('nombre-ciudad').textContent = ciudad;
+        document.getElementById('pais').textContent = '🔑 Datos de ejemplo (agrega tu API key)';
+        document.getElementById('temperatura').textContent = d.temp + '°C';
+        document.getElementById('descripcion').textContent = d.desc;
+        document.getElementById('icono-clima').textContent = d.icono;
+        document.getElementById('sensacion').textContent = d.sensacion + '°C';
+        document.getElementById('humedad').textContent = d.humedad + '%';
+        document.getElementById('viento').textContent = d.viento + ' km/h';
+        document.getElementById('visibilidad').textContent = d.visib + ' km';
+        document.getElementById('tarjeta-clima').style.display = 'block';
+    }
+
+    function buscarRapido(ciudad) {
+        document.getElementById('ciudad-input').value = ciudad;
+        buscarClima();
+    }
+
+    // Buscar al presionar Enter
+    document.getElementById('ciudad-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') buscarClima();
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <style>
+        body {
+            background-color: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .calculadora {
+            background-color: #16213e;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            width: 280px;
+        }
+
+        .pantalla {
+            background-color: #0f3460;
+            color: white;
+            font-size: 28px;
+            text-align: right;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            min-height: 50px;
+            word-break: break-all;
+        }
+
+        .botones {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 18px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #533483;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #6a45a0;
+        }
+
+        .btn-operador {
+            background-color: #e94560;
+        }
+
+        .btn-operador:hover {
+            background-color: #ff6b7a;
+        }
+
+        .btn-igual {
+            background-color: #0f3460;
+            grid-column: span 2;
+        }
+
+        .btn-igual:hover {
+            background-color: #1a4f8a;
+        }
+
+        .btn-limpiar {
+            background-color: #e94560;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculadora">
+    <div class="pantalla" id="pantalla">0</div>
+    <div class="botones">
+        <button class="btn-limpiar" onclick="limpiar()">C</button>
+        <button class="btn-operador" onclick="agregarCaracter('%')">%</button>
+        <button class="btn-operador" onclick="borrarUltimo()">⌫</button>
+        <button class="btn-operador" onclick="agregarCaracter('/')">÷</button>
+
+        <button onclick="agregarCaracter('7')">7</button>
+        <button onclick="agregarCaracter('8')">8</button>
+        <button onclick="agregarCaracter('9')">9</button>
+        <button class="btn-operador" onclick="agregarCaracter('*')">×</button>
+
+        <button onclick="agregarCaracter('4')">4</button>
+        <button onclick="agregarCaracter('5')">5</button>
+        <button onclick="agregarCaracter('6')">6</button>
+        <button class="btn-operador" onclick="agregarCaracter('-')">−</button>
+
+        <button onclick="agregarCaracter('1')">1</button>
+        <button onclick="agregarCaracter('2')">2</button>
+        <button onclick="agregarCaracter('3')">3</button>
+        <button class="btn-operador" onclick="agregarCaracter('+')">+</button>
+
+        <button onclick="agregarCaracter('0')">0</button>
+        <button onclick="agregarCaracter('.')">.</button>
+        <button class="btn-igual" onclick="calcular()">=</button>
+    </div>
+</div>
+
+<script>
+    let pantalla = document.getElementById('pantalla');
+    let numero = '';
+
+    function agregarCaracter(valor) {
+        if (numero === '0' && valor !== '.') {
+            numero = valor;
+        } else {
+            numero += valor;
+        }
+        pantalla.textContent = numero;
+    }
+
+    function limpiar() {
+        numero = '';
+        pantalla.textContent = '0';
+    }
+
+    function borrarUltimo() {
+        numero = numero.slice(0, -1);
+        pantalla.textContent = numero || '0';
+    }
+
+    function calcular() {
+        try {
+            let resultado = eval(numero);
+            pantalla.textContent = resultado;
+            numero = String(resultado);
+        } catch (error) {
+            pantalla.textContent = 'Error';
+            numero = '';
+        }
+    }
+</script>
+
+</body>
+</html>

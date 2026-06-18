@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz de Tecnología</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            max-width: 550px;
+            width: 100%;
+        }
+
+        /* PANTALLA INICIO */
+        .inicio h1 {
+            font-size: 26px;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        .inicio p { color: #718096; margin-bottom: 20px; }
+
+        .categorias {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .cat-btn {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .cat-btn:hover, .cat-btn.seleccionado {
+            border-color: #667eea;
+            background: #ebf4ff;
+            color: #667eea;
+        }
+
+        /* BARRA DE PROGRESO */
+        .progreso-barra {
+            background: #e2e8f0;
+            border-radius: 5px;
+            height: 8px;
+            margin-bottom: 20px;
+        }
+
+        .progreso-fill {
+            background: #667eea;
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        .info-quiz {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 20px;
+        }
+
+        .pregunta {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .opcion {
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .opcion:hover:not(:disabled) {
+            border-color: #667eea;
+            background: #ebf4ff;
+        }
+
+        .opcion.correcta {
+            border-color: #68d391;
+            background: #f0fff4;
+            color: #276749;
+        }
+
+        .opcion.incorrecta {
+            border-color: #fc8181;
+            background: #fff5f5;
+            color: #c53030;
+        }
+
+        .explicacion {
+            background: #ebf8ff;
+            border-left: 4px solid #4299e1;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            color: #2b6cb0;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .btn-siguiente {
+            width: 100%;
+            padding: 13px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* RESULTADOS */
+        .resultados { text-align: center; }
+        .puntaje-circulo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+        }
+        .puntaje-circulo .numero { font-size: 36px; font-weight: bold; }
+        .puntaje-circulo .de { font-size: 13px; }
+
+        .mensaje-resultado { font-size: 20px; font-weight: bold; color: #2d3748; margin-bottom: 8px; }
+        .sub-resultado { color: #718096; margin-bottom: 25px; }
+
+        .btn-reiniciar {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .oculto { display: none; }
+
+        .btn-iniciar {
+            width: 100%;
+            padding: 13px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <!-- INICIO -->
+    <div id="pantalla-inicio" class="inicio">
+        <h1>🧠 Quiz de Tecnología</h1>
+        <p>Pon a prueba tus conocimientos en tecnología e informática</p>
+        <p style="color:#667eea; margin-bottom:15px; font-size:14px;">10 preguntas · Elige tu tema:</p>
+        <div class="categorias">
+            <button class="cat-btn seleccionado" onclick="seleccionarCat('general', this)">💻 General</button>
+            <button class="cat-btn" onclick="seleccionarCat('programacion', this)">👨‍💻 Programación</button>
+            <button class="cat-btn" onclick="seleccionarCat('internet', this)">🌐 Internet</button>
+            <button class="cat-btn" onclick="seleccionarCat('hardware', this)">🖥️ Hardware</button>
+        </div>
+        <button class="btn-iniciar" onclick="iniciarQuiz()">Comenzar Quiz</button>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="pantalla-quiz" class="oculto">
+        <div class="progreso-barra">
+            <div class="progreso-fill" id="progreso-fill"></div>
+        </div>
+        <div class="info-quiz">
+            <span id="num-pregunta">Pregunta 1 de 5</span>
+            <span id="puntaje-actual">⭐ 0 puntos</span>
+        </div>
+        <p class="pregunta" id="texto-pregunta"></p>
+        <div class="opciones" id="contenedor-opciones"></div>
+        <div class="explicacion" id="explicacion"></div>
+        <button class="btn-siguiente" id="btn-siguiente" onclick="siguiente()">Siguiente →</button>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div id="pantalla-resultados" class="resultados oculto">
+        <div class="puntaje-circulo">
+            <span class="numero" id="puntaje-final"></span>
+            <span class="de" id="de-total"></span>
+        </div>
+        <p class="mensaje-resultado" id="mensaje-resultado"></p>
+        <p class="sub-resultado" id="sub-resultado"></p>
+        <button class="btn-reiniciar" onclick="reiniciar()">🔄 Jugar de nuevo</button>
+    </div>
+</div>
+
+<script>
+const preguntas = {
+    general: [
+        { p: "¿Qué significa CPU?", ops: ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Core Processing Unit"], resp: 0, exp: "CPU significa Central Processing Unit (Unidad Central de Procesamiento), el 'cerebro' del computador." },
+        { p: "¿Qué es RAM?", ops: ["Red de Área Metropolitana", "Memoria de Acceso Aleatorio", "Registro de Almacenamiento Máximo", "Red de Acceso Múltiple"], resp: 1, exp: "RAM (Random Access Memory) es la memoria temporal que usa el computador para ejecutar programas." },
+        { p: "¿Cuántos bits tiene un byte?", ops: ["4", "16", "8", "32"], resp: 2, exp: "Un byte equivale a 8 bits. Esta es la unidad básica de almacenamiento de información." },
+        { p: "¿Qué sistema operativo es de código abierto?", ops: ["Windows", "macOS", "Linux", "iOS"], resp: 2, exp: "Linux es un sistema operativo de código abierto (open source), lo que significa que cualquiera puede ver y modificar su código." },
+        { p: "¿Qué es un algoritmo?", ops: ["Un tipo de virus", "Un lenguaje de programación", "Una secuencia de pasos para resolver un problema", "Un componente de hardware"], resp: 2, exp: "Un algoritmo es una serie de instrucciones o pasos definidos para resolver un problema o realizar una tarea." }
+    ],
+    programacion: [
+        { p: "¿Qué es Python?", ops: ["Una serpiente", "Un lenguaje de programación", "Un sistema operativo", "Un navegador web"], resp: 1, exp: "Python es un lenguaje de programación de alto nivel, conocido por su sintaxis sencilla y versatilidad." },
+        { p: "¿Qué hace el operador '==' en programación?", ops: ["Asigna un valor", "Compara si dos valores son iguales", "Suma dos números", "Define una variable"], resp: 1, exp: "El operador '==' compara si dos valores son iguales y devuelve true o false." },
+        { p: "¿Qué es una función en programación?", ops: ["Un tipo de dato", "Un bucle", "Un bloque de código reutilizable", "Una base de datos"], resp: 2, exp: "Una función es un bloque de código que realiza una tarea específica y se puede llamar varias veces." },
+        { p: "¿Qué es HTML?", ops: ["Un lenguaje de programación", "Un lenguaje de marcado para páginas web", "Una base de datos", "Un sistema operativo"], resp: 1, exp: "HTML (HyperText Markup Language) es el lenguaje de marcado usado para crear la estructura de las páginas web." },
+        { p: "¿Qué es SQL?", ops: ["Un tipo de CPU", "Un lenguaje para manejar bases de datos", "Un sistema operativo", "Un tipo de red"], resp: 1, exp: "SQL (Structured Query Language) es el lenguaje estándar para manejar bases de datos relacionales." }
+    ],
+    internet: [
+        { p: "¿Qué significa URL?", ops: ["Universal Resource Locator", "Uniform Resource Locator", "United Resource Link", "Universal Registry Link"], resp: 1, exp: "URL significa Uniform Resource Locator, básicamente es la dirección de una página web." },
+        { p: "¿Qué protocolo usan las páginas web seguras?", ops: ["HTTP", "FTP", "HTTPS", "SMTP"], resp: 2, exp: "HTTPS (HTTP Secure) es la versión segura del protocolo HTTP que encripta la comunicación." },
+        { p: "¿Qué es un servidor?", ops: ["Un trabajador de café", "Una computadora que provee servicios a otras", "Un tipo de cable", "Un navegador web"], resp: 1, exp: "Un servidor es una computadora que proporciona datos o servicios a otras computadoras en una red." },
+        { p: "¿Qué significa WiFi?", ops: ["Wireless Fidelity", "Wide Fiber", "Wireless File", "Wide Frequency"], resp: 0, exp: "WiFi viene de Wireless Fidelity, es la tecnología de red inalámbrica que usamos todos los días." },
+        { p: "¿Qué es una cookie en internet?", ops: ["Un archivo de galletas", "Un pequeño archivo que guarda info del usuario", "Un tipo de virus", "Una cámara web"], resp: 1, exp: "Las cookies son pequeños archivos que los sitios web guardan en tu navegador para recordar información como tu sesión." }
+    ],
+    hardware: [
+        { p: "¿Qué es la tarjeta madre (motherboard)?", ops: ["Un tipo de pantalla", "La placa principal que conecta todos los componentes", "Una tarjeta de video", "Un tipo de disco duro"], resp: 1, exp: "La motherboard o tarjeta madre es la placa de circuito principal que conecta y permite comunicación entre todos los componentes." },
+        { p: "¿Qué hace la GPU?", ops: ["Procesa el audio", "Procesa gráficos e imágenes", "Guarda archivos", "Conecta a internet"], resp: 1, exp: "La GPU (Graphics Processing Unit) procesa y renderiza gráficos, imágenes y video." },
+        { p: "¿Cuál es la diferencia entre HDD y SSD?", ops: ["No hay diferencia", "El HDD usa piezas mecánicas, el SSD es electrónico", "El SSD es más antiguo", "El HDD es más rápido"], resp: 1, exp: "HDD usa discos magnéticos giratorios (mecánico), mientras que SSD usa chips de memoria flash (sin partes móviles), siendo más rápido." },
+        { p: "¿Qué es el BIOS?", ops: ["Un lenguaje de programación", "Software básico que inicia el hardware al encender", "Un tipo de virus", "Un puerto de conexión"], resp: 1, exp: "El BIOS (Basic Input/Output System) es el firmware básico que arranca al encender el PC e inicializa el hardware antes del sistema operativo." },
+        { p: "¿Qué unidad mide la velocidad del procesador?", ops: ["Voltios", "Gigabytes", "Gigahertz (GHz)", "Watts"], resp: 2, exp: "La velocidad del procesador se mide en GHz (Gigahertz), que indica cuántas operaciones puede hacer por segundo." }
+    ]
+};
+
+let catActual = 'general';
+let preguntasActuales = [];
+let preguntaIndex = 0;
+let puntaje = 0;
+let respondida = false;
+
+function seleccionarCat(cat, btn) {
+    catActual = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('seleccionado'));
+    btn.classList.add('seleccionado');
+}
+
+function iniciarQuiz() {
+    preguntasActuales = [...preguntas[catActual]].sort(() => Math.random() - 0.5);
+    preguntaIndex = 0;
+    puntaje = 0;
+    mostrarPantalla('quiz');
+    mostrarPregunta();
+}
+
+function mostrarPregunta() {
+    respondida = false;
+    let p = preguntasActuales[preguntaIndex];
+    let total = preguntasActuales.length;
+
+    document.getElementById('num-pregunta').textContent = `Pregunta ${preguntaIndex + 1} de ${total}`;
+    document.getElementById('puntaje-actual').textContent = `⭐ ${puntaje} puntos`;
+    document.getElementById('progreso-fill').style.width = `${(preguntaIndex / total) * 100}%`;
+    document.getElementById('texto-pregunta').textContent = p.p;
+    document.getElementById('explicacion').style.display = 'none';
+    document.getElementById('btn-siguiente').style.display = 'none';
+
+    let contenedor = document.getElementById('contenedor-opciones');
+    contenedor.innerHTML = p.ops.map((op, i) => `
+        <button class="opcion" onclick="responder(${i})">${op}</button>
+    `).join('');
+}
+
+function responder(index) {
+    if (respondida) return;
+    respondida = true;
+
+    let p = preguntasActuales[preguntaIndex];
+    let botones = document.querySelectorAll('.opcion');
+
+    botones.forEach(b => b.disabled = true);
+    botones[p.resp].classList.add('correcta');
+
+    if (index === p.resp) {
+        puntaje++;
+    } else {
+        botones[index].classList.add('incorrecta');
+    }
+
+    document.getElementById('explicacion').textContent = '💡 ' + p.exp;
+    document.getElementById('explicacion').style.display = 'block';
+    document.getElementById('btn-siguiente').style.display = 'block';
+
+    let texto = preguntaIndex === preguntasActuales.length - 1 ? 'Ver resultados' : 'Siguiente →';
+    document.getElementById('btn-siguiente').textContent = texto;
+}
+
+function siguiente() {
+    preguntaIndex++;
+    if (preguntaIndex >= preguntasActuales.length) {
+        mostrarResultados();
+    } else {
+        mostrarPregunta();
+    }
+}
+
+function mostrarResultados() {
+    let total = preguntasActuales.length;
+    document.getElementById('puntaje-final').textContent = puntaje;
+    document.getElementById('de-total').textContent = `de ${total}`;
+
+    let porcentaje = (puntaje / total) * 100;
+    let mensaje, sub;
+    if (porcentaje === 100) { mensaje = "¡Perfecto! 🏆"; sub = "¡Eres un experto en tecnología!"; }
+    else if (porcentaje >= 80) { mensaje = "¡Excelente! 🌟"; sub = "Tienes muy buen conocimiento técnico."; }
+    else if (porcentaje >= 60) { mensaje = "¡Bien hecho! 👍"; sub = "Buen resultado, sigue aprendiendo."; }
+    else if (porcentaje >= 40) { mensaje = "Puedes mejorar 💪"; sub = "Sigue estudiando, vas bien."; }
+    else { mensaje = "Sigue practicando 📚"; sub = "Revisa los temas e inténtalo de nuevo."; }
+
+    document.getElementById('mensaje-resultado').textContent = mensaje;
+    document.getElementById('sub-resultado').textContent = sub;
+    mostrarPantalla('resultados');
+}
+
+function mostrarPantalla(pantalla) {
+    document.getElementById('pantalla-inicio').classList.add('oculto');
+    document.getElementById('pantalla-quiz').classList.add('oculto');
+    document.getElementById('pantalla-resultados').classList.add('oculto');
+    document.getElementById(`pantalla-${pantalla}`).classList.remove('oculto');
+}
+
+function reiniciar() {
+    mostrarPantalla('inicio');
+}
+</script>
+
+</body>
+</html>

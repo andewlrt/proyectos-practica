@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Convertidor de Moneda</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .grupo {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #4a5568;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 20px;
+            color: #2d3748;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #4299e1;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #2d3748;
+            outline: none;
+            cursor: pointer;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        .flecha {
+            text-align: center;
+            font-size: 24px;
+            margin: 10px 0;
+            color: #4299e1;
+            cursor: pointer;
+        }
+
+        .flecha:hover {
+            transform: rotate(180deg);
+        }
+
+        .btn-convertir {
+            width: 100%;
+            padding: 14px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .btn-convertir:hover {
+            background: #3182ce;
+        }
+
+        .resultado {
+            background: #ebf8ff;
+            border: 2px solid #bee3f8;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .resultado .monto-resultado {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2b6cb0;
+            margin: 5px 0;
+        }
+
+        .resultado .tasa {
+            font-size: 13px;
+            color: #4299e1;
+        }
+
+        .nota {
+            text-align: center;
+            font-size: 11px;
+            color: #a0aec0;
+            margin-top: 15px;
+        }
+
+        .monedas-rapidas {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .monedas-rapidas button {
+            padding: 6px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            color: #4a5568;
+        }
+
+        .monedas-rapidas button:hover {
+            background: #ebf8ff;
+            border-color: #4299e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <h1>💱 Convertidor de Moneda</h1>
+    <p class="subtitulo">Tasas de referencia aproximadas (actualizar manualmente)</p>
+
+    <div class="grupo">
+        <label>Monto a convertir</label>
+        <input type="number" id="monto" placeholder="100" value="100" min="0" />
+    </div>
+
+    <div class="grupo">
+        <label>De:</label>
+        <select id="monedaOrigen">
+            <option value="COP">🇨🇴 Peso Colombiano (COP)</option>
+            <option value="USD" selected>🇺🇸 Dólar (USD)</option>
+            <option value="EUR">🇪🇺 Euro (EUR)</option>
+            <option value="MXN">🇲🇽 Peso Mexicano (MXN)</option>
+            <option value="ARS">🇦🇷 Peso Argentino (ARS)</option>
+            <option value="BRL">🇧🇷 Real Brasileño (BRL)</option>
+            <option value="GBP">🇬🇧 Libra Esterlina (GBP)</option>
+            <option value="CLP">🇨🇱 Peso Chileno (CLP)</option>
+        </select>
+    </div>
+
+    <div class="flecha" onclick="intercambiar()">⇅</div>
+
+    <div class="grupo">
+        <label>A:</label>
+        <select id="monedaDestino">
+            <option value="COP" selected>🇨🇴 Peso Colombiano (COP)</option>
+            <option value="USD">🇺🇸 Dólar (USD)</option>
+            <option value="EUR">🇪🇺 Euro (EUR)</option>
+            <option value="MXN">🇲🇽 Peso Mexicano (MXN)</option>
+            <option value="ARS">🇦🇷 Peso Argentino (ARS)</option>
+            <option value="BRL">🇧🇷 Real Brasileño (BRL)</option>
+            <option value="GBP">🇬🇧 Libra Esterlina (GBP)</option>
+            <option value="CLP">🇨🇱 Peso Chileno (CLP)</option>
+        </select>
+    </div>
+
+    <div>
+        <label style="margin-bottom: 6px; display: block;">Conversiones rápidas:</label>
+        <div class="monedas-rapidas">
+            <button onclick="convertirRapido('USD', 'COP')">USD → COP</button>
+            <button onclick="convertirRapido('COP', 'USD')">COP → USD</button>
+            <button onclick="convertirRapido('EUR', 'COP')">EUR → COP</button>
+            <button onclick="convertirRapido('USD', 'EUR')">USD → EUR</button>
+        </div>
+    </div>
+
+    <button class="btn-convertir" onclick="convertir()">Convertir</button>
+
+    <div class="resultado" id="resultado">
+        <p style="color: #4a5568; font-size: 14px;">Resultado:</p>
+        <div class="monto-resultado" id="montoResultado"></div>
+        <p class="tasa" id="tasaInfo"></p>
+    </div>
+
+    <p class="nota">⚠️ Las tasas son aproximadas y pueden variar. Consulta tu banco para tasas oficiales.</p>
+</div>
+
+<script>
+    // Tasas aproximadas con respecto al USD (actualizar periódicamente)
+    const tasas = {
+        USD: 1,
+        EUR: 0.92,
+        GBP: 0.79,
+        COP: 4100,
+        MXN: 17.5,
+        ARS: 850,
+        BRL: 5.1,
+        CLP: 950
+    };
+
+    const simbolos = {
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        COP: '$',
+        MXN: '$',
+        ARS: '$',
+        BRL: 'R$',
+        CLP: '$'
+    };
+
+    function convertir() {
+        let monto = parseFloat(document.getElementById('monto').value);
+        let origen = document.getElementById('monedaOrigen').value;
+        let destino = document.getElementById('monedaDestino').value;
+
+        if (isNaN(monto) || monto < 0) {
+            alert('Por favor ingresa un monto válido');
+            return;
+        }
+
+        // Primero convertir a USD, luego a la moneda destino
+        let enDolares = monto / tasas[origen];
+        let resultado = enDolares * tasas[destino];
+
+        let resultadoDiv = document.getElementById('resultado');
+        let montoDiv = document.getElementById('montoResultado');
+        let tasaDiv = document.getElementById('tasaInfo');
+
+        resultadoDiv.style.display = 'block';
+        montoDiv.textContent = simbolos[destino] + ' ' + resultado.toLocaleString('es-CO', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }) + ' ' + destino;
+
+        let tasaCambio = tasas[destino] / tasas[origen];
+        tasaDiv.textContent = `1 ${origen} = ${tasaCambio.toFixed(4)} ${destino}`;
+    }
+
+    function intercambiar() {
+        let origen = document.getElementById('monedaOrigen');
+        let destino = document.getElementById('monedaDestino');
+        let temp = origen.value;
+        origen.value = destino.value;
+        destino.value = temp;
+    }
+
+    function convertirRapido(de, a) {
+        document.getElementById('monedaOrigen').value = de;
+        document.getElementById('monedaDestino').value = a;
+        convertir();
+    }
+
+    // Convertir automáticamente al cargar
+    convertir();
+</script>
+
+</body>
+</html>
