@@ -1,4 +1,4 @@
-# 📱 Agenda de Contactos
+#  Agenda de Contactos
 
 Aplicación de consola en Python para gestionar tus contactos personales.
 
